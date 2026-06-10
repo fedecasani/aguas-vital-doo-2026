@@ -4,9 +4,12 @@
  */
 package org.ubp.edu.ar.ejemplocompletofx.modelo;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import org.ubp.edu.ar.ejemplocompletofx.dao.ClienteDao;
+import org.ubp.edu.ar.ejemplocompletofx.dto.BarrioDto;
 import org.ubp.edu.ar.ejemplocompletofx.dto.ClienteDto;
+import org.ubp.edu.ar.ejemplocompletofx.dto.ZonaDto;
 import org.ubp.edu.ar.ejemplocompletofx.factories.FabricaDao;
 
 /**
@@ -15,6 +18,7 @@ import org.ubp.edu.ar.ejemplocompletofx.factories.FabricaDao;
  */
 public class Cliente extends Modelo {
 
+    private int id;
     private String nombre;
     private String apellido;
     private String dni;
@@ -31,8 +35,27 @@ public class Cliente extends Modelo {
 
     public List<Cliente> listarTodos() {
         List<ClienteDto> clientesDto = this.dao.listarTodos();
-        List<Cliente> clientes = Arrays.asList(this.mapper.map(clientesDto, Cliente[].class));
+        List<Cliente> clientes = new ArrayList<>();
+        for (ClienteDto clienteDto : clientesDto) {
+            clientes.add(desdeDto(clienteDto));
+        }
         return clientes;
+    }
+
+    public Cliente buscar(String tipoDocumento, String nroDocumento) {
+        ClienteDto criterio = new ClienteDto();
+        criterio.setTipoDocumento(tipoDocumento);
+        criterio.setDni(nroDocumento);
+        ClienteDto encontrado = ((ClienteDao) this.dao).buscar(criterio);
+        return encontrado == null ? null : desdeDto(encontrado);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -111,8 +134,50 @@ public class Cliente extends Modelo {
         return barrio != null ? barrio.getZona() : null;
     }
 
+    ClienteDto aDto() {
+        ClienteDto dto = new ClienteDto();
+        dto.setId(id);
+        dto.setTipoDocumento(tipoDocumento);
+        dto.setDni(dni);
+        dto.setNombre(nombre);
+        dto.setApellido(apellido);
+        dto.setRazonSocial(razonSocial);
+        dto.setDireccion(direccion);
+        dto.setTelefono(telefono);
+        dto.setActivo(activo);
+        if (barrio != null) {
+            ZonaDto zonaDto = new ZonaDto(barrio.getZona().getId(), barrio.getZona().getNombre());
+            dto.setBarrio(new BarrioDto(barrio.getId(), barrio.getNombre(), zonaDto));
+        }
+        return dto;
+    }
+
+    static Cliente desdeDto(ClienteDto dto) {
+        Cliente cliente = new Cliente();
+        cliente.setId(dto.getId());
+        cliente.setTipoDocumento(dto.getTipoDocumento());
+        cliente.setDni(dto.getDni());
+        cliente.setNombre(dto.getNombre());
+        cliente.setApellido(dto.getApellido());
+        cliente.setRazonSocial(dto.getRazonSocial());
+        cliente.setDireccion(dto.getDireccion());
+        cliente.setTelefono(dto.getTelefono());
+        cliente.setActivo(dto.isActivo());
+        if (dto.getBarrio() != null) {
+            Zona zona = new Zona();
+            zona.setId(dto.getBarrio().getZona().getId());
+            zona.setNombre(dto.getBarrio().getZona().getNombre());
+            Barrio barrio = new Barrio();
+            barrio.setId(dto.getBarrio().getId());
+            barrio.setNombre(dto.getBarrio().getNombre());
+            barrio.setZona(zona);
+            cliente.setBarrio(barrio);
+        }
+        return cliente;
+    }
+
     @Override
     public String toString() {
-        return nombre.toUpperCase() + " " + apellido.toUpperCase();
+        return (nombre + " " + apellido).trim().toUpperCase();
     }
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="430.0" prefWidth="560.0" xmlns="http://javafx.com/javafx/13"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.ubp.edu.ar.ejemplocompletofx.controladores.ActualizarPedidoController">
+    <children>
+        <Label fx:id="lblPedido" layoutX="18.0" layoutY="18.0" text="Pedido"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+        <Label layoutX="18.0" layoutY="60.0" text="Cliente:" />
+        <Label fx:id="lblCliente" layoutX="95.0" layoutY="60.0" text="-" />
+        <Label layoutX="18.0" layoutY="90.0" text="Total:" />
+        <Label fx:id="lblTotal" layoutX="95.0" layoutY="90.0" text="-" />
+
+        <Separator layoutX="18.0" layoutY="125.0" prefWidth="524.0" />
+        <Label layoutX="18.0" layoutY="145.0" text="Resultado de la visita"
+               style="-fx-font-weight: bold;" />
+        <RadioButton fx:id="rbEntregado" layoutX="18.0" layoutY="180.0"
+                     text="Pedido entregado" onAction="#actualizarCampos" />
+        <RadioButton fx:id="rbPendiente" layoutX="180.0" layoutY="180.0"
+                     text="Mantener pendiente" onAction="#actualizarCampos" />
+
+        <Label layoutX="18.0" layoutY="225.0" text="Fecha de entrega:" />
+        <DatePicker fx:id="dpFechaEntrega" layoutX="145.0" layoutY="218.0" />
+        <Label layoutX="18.0" layoutY="265.0" text="Forma de pago:" />
+        <ComboBox fx:id="cmbFormaPago" layoutX="145.0" layoutY="258.0" prefWidth="200.0" />
+        <Label layoutX="18.0" layoutY="305.0" text="Motivo:" />
+        <TextArea fx:id="txtMotivo" layoutX="145.0" layoutY="298.0"
+                  prefHeight="65.0" prefWidth="390.0" wrapText="true" />
+
+        <ProgressBar fx:id="progress" layoutX="18.0" layoutY="390.0"
+                     prefWidth="110.0" visible="false" />
+        <Button layoutX="390.0" layoutY="382.0" text="Guardar"
+                onAction="#guardarActualizacion" />
+        <Button fx:id="btnCerrar" layoutX="475.0" layoutY="382.0" text="Cerrar"
+                onAction="#cerrarVentana" />
+    </children>
+</AnchorPane>

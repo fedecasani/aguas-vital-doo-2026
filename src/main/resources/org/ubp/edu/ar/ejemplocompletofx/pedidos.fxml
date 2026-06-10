@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ubp.edu.ar.ejemplocompletofx.controladores.PedidosController">
-   <children>
-      <TableView fx:id="tableView" layoutX="12.0" layoutY="58.0" onMouseClicked="#obtenerPedidoSeleccionado" prefHeight="201.0" prefWidth="575.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.627381641922966">
-        <columns>
-          <TableColumn prefWidth="75.0" text="Nro" />
-          <TableColumn prefWidth="130.86019897460938" text="Fecha" />
-            <TableColumn prefWidth="367.2486287352407" text="Cliente" />
-        </columns>
-      </TableView>
-      <ProgressBar fx:id="progress" layoutX="14.0" layoutY="366.0" prefHeight="20.0" prefWidth="91.0" AnchorPane.bottomAnchor="13.022406487211537" AnchorPane.leftAnchor="14.0" />
-      <Button fx:id="btnCerrar" layoutX="525.0" layoutY="365.0" mnemonicParsing="false" onAction="#cerrarVentana" text="Cerrar" AnchorPane.bottomAnchor="10.026674389537543" AnchorPane.rightAnchor="15.064018534890103" />
-      <Button fx:id="btnEliminar" layoutX="445.0" layoutY="365.0" mnemonicParsing="false" onAction="#eliminarPedido" text="Eliminar" AnchorPane.bottomAnchor="10.026674389537561" AnchorPane.rightAnchor="83.07682224186806" />
-      <Button fx:id="btnBuscar" layoutX="196.0" layoutY="14.0" mnemonicParsing="false" onAction="#buscarPedidos" text="Buscar" AnchorPane.leftAnchor="196.0" AnchorPane.topAnchor="14.0" />
-      <Button fx:id="btnModificar" layoutX="360.0" layoutY="363.0" mnemonicParsing="false" onAction="#modificarPedido" text="Modificar" AnchorPane.bottomAnchor="10.02880834070055" AnchorPane.rightAnchor="164.08109014419415" />
-      <TextField fx:id="txtBuscar" layoutX="12.0" layoutY="14.0" promptText="Ingrese un nro..." AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="14.0" />
-      <Button fx:id="btnNuevo" layoutX="290.0" layoutY="363.0" mnemonicParsing="false" onAction="#nuevoPedido" text="Nuevo" />
-      <Button fx:id="btnLimpiar" layoutX="264.0" layoutY="14.0" mnemonicParsing="false" onAction="#limpiarBusqueda" text="X" textFill="RED" AnchorPane.leftAnchor="264.0" AnchorPane.topAnchor="14.0">
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor>
-      </Button>
-      <Button fx:id="btnReporte" layoutX="209.0" layoutY="363.0" mnemonicParsing="false" onAction="#generarReporte" text="Reporte" />
-   </children>
+<AnchorPane prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/13"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.ubp.edu.ar.ejemplocompletofx.controladores.PedidosController">
+    <children>
+        <Label layoutX="16.0" layoutY="18.0" text="Gestión de pedidos"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+        <TextField fx:id="txtBuscar" layoutX="16.0" layoutY="55.0" prefWidth="180.0"
+                   promptText="Número de pedido" />
+        <Button layoutX="205.0" layoutY="55.0" text="Buscar" onAction="#buscarPedidos" />
+        <Button layoutX="270.0" layoutY="55.0" text="Limpiar" onAction="#limpiarBusqueda" />
+
+        <TableView fx:id="tableView" layoutX="16.0" layoutY="95.0"
+                   prefHeight="330.0" prefWidth="918.0"
+                   onMouseClicked="#obtenerPedidoSeleccionado">
+            <columns>
+                <TableColumn prefWidth="65.0" text="Nro." />
+                <TableColumn prefWidth="145.0" text="Solicitud" />
+                <TableColumn prefWidth="145.0" text="Entrega estimada" />
+                <TableColumn prefWidth="190.0" text="Cliente" />
+                <TableColumn prefWidth="210.0" text="Distribuidor" />
+                <TableColumn prefWidth="135.0" text="Estado" />
+            </columns>
+        </TableView>
+
+        <ProgressBar fx:id="progress" layoutX="16.0" layoutY="455.0" prefWidth="120.0" />
+        <Button layoutX="560.0" layoutY="448.0" prefWidth="145.0"
+                text="Registrar pedido" onAction="#nuevoPedido" />
+        <Button layoutX="715.0" layoutY="448.0" prefWidth="145.0"
+                text="Actualizar pedido" onAction="#actualizarPedido" />
+        <Button fx:id="btnCerrar" layoutX="870.0" layoutY="448.0"
+                text="Cerrar" onAction="#cerrarVentana" />
+    </children>
 </AnchorPane>

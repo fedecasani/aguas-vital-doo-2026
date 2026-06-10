@@ -1,5 +1,9 @@
 package org.ubp.edu.ar.ejemplocompletofx.modelo;
 
+import org.ubp.edu.ar.ejemplocompletofx.dto.DistribuidorDto;
+import org.ubp.edu.ar.ejemplocompletofx.dto.ZonaDto;
+import org.ubp.edu.ar.ejemplocompletofx.factories.FabricaDao;
+
 public class Distribuidor extends Modelo {
 
     private int id;
@@ -8,6 +12,10 @@ public class Distribuidor extends Modelo {
     private String apellido;
     private int capacidadDiaria;
     private Zona zona;
+
+    public Distribuidor() {
+        this.dao = FabricaDao.fabricar("DistribuidorDao");
+    }
 
     public int getId() {
         return id;
@@ -63,5 +71,24 @@ public class Distribuidor extends Modelo {
     @Override
     public String toString() {
         return legajo + " - " + nombre + " " + apellido;
+    }
+
+    DistribuidorDto aDto() {
+        return new DistribuidorDto(id, legajo, nombre, apellido, capacidadDiaria,
+                new ZonaDto(zona.getId(), zona.getNombre()));
+    }
+
+    static Distribuidor desdeDto(DistribuidorDto dto) {
+        Distribuidor distribuidor = new Distribuidor();
+        distribuidor.setId(dto.getId());
+        distribuidor.setLegajo(dto.getLegajo());
+        distribuidor.setNombre(dto.getNombre());
+        distribuidor.setApellido(dto.getApellido());
+        distribuidor.setCapacidadDiaria(dto.getCapacidadDiaria());
+        Zona zona = new Zona();
+        zona.setId(dto.getZona().getId());
+        zona.setNombre(dto.getZona().getNombre());
+        distribuidor.setZona(zona);
+        return distribuidor;
     }
 }

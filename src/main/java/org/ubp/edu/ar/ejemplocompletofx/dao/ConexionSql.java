@@ -45,6 +45,9 @@ public final class ConexionSql implements AutoCloseable {
     }
 
     public void cerrar() {
+        if (this.connection == null) {
+            return;
+        }
         try {
             this.connection.close();
         } catch (SQLException ex) {

@@ -1,62 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="503.0" prefWidth="727.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ubp.edu.ar.ejemplocompletofx.controladores.EditarPedidoController">
-   <children>
-      <DatePicker fx:id="txtFecha" layoutX="436.5347986464653" layoutY="9.989330244184982" prefHeight="29.0" prefWidth="156.0" AnchorPane.leftAnchor="436.5347986464653" AnchorPane.topAnchor="9.989330244184982" />
-      <Label layoutX="363.61055391275187" layoutY="15.982928390695973" text="Fecha:" AnchorPane.leftAnchor="363.61055391275187" AnchorPane.topAnchor="15.982928390695973" />
-      <Label layoutX="14.0" layoutY="15.0" text="Nro: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="15.0" />
-      <TextField fx:id="txtNro" editable="false" layoutX="79.0" layoutY="11.0" prefHeight="26.0" prefWidth="44.0" AnchorPane.leftAnchor="79.0" AnchorPane.topAnchor="11.0" />
-      <ComboBox fx:id="cmbCliente" layoutX="78.91570892906137" layoutY="54.941316343017405" prefHeight="28.0" prefWidth="263.0" AnchorPane.leftAnchor="79.0" AnchorPane.topAnchor="55.0" />
-      <Label layoutX="12.0" layoutY="58.0" text="Cliente:" AnchorPane.leftAnchor="12.0" />
-      <Label layoutX="364.0" layoutY="60.0" text="Vendedor:" AnchorPane.leftAnchor="364.0" />
-      <ComboBox fx:id="cmbVendedor" layoutX="438.0" layoutY="55.0" prefHeight="26.0" prefWidth="275.0" AnchorPane.leftAnchor="438.0" AnchorPane.topAnchor="55.0" />
-      <TableView fx:id="tableView" layoutX="14.0" layoutY="148.0" onMouseClicked="#obtenerDetallePedidoSeleccionado" prefHeight="218.0" prefWidth="569.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="17.0">
-        <columns>
-          <TableColumn prefWidth="292.6873195171356" text="Producto" />
-          <TableColumn minWidth="0.0" prefWidth="143.8463134765625" text="Cantidad" />
-            <TableColumn prefWidth="125.86563110351562" text="Precio vta" />
-            <TableColumn prefWidth="129.861328125" text="Subtotal" />
-        </columns>
-      </TableView>
-      <Separator layoutX="15.0" layoutY="109.0" prefHeight="4.0" prefWidth="569.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.966923756973529" />
-      <Label layoutX="17.0" layoutY="181.0" text="Detalles:" AnchorPane.leftAnchor="17.0" />
-      <Button fx:id="btnCerrarEditarPedido" layoutX="525.0" layoutY="407.0" mnemonicParsing="false" onAction="#cerrarVentana" text="Cerrar" AnchorPane.bottomAnchor="13.026674389537543" AnchorPane.rightAnchor="13.066152486053106" />
-      <Button fx:id="btnGuardar" layoutX="449.0" layoutY="465.0" mnemonicParsing="false" onAction="#guardarPedido" text="Guardar" AnchorPane.bottomAnchor="13.026674389537543" AnchorPane.rightAnchor="79.07682224186811" />
-      <ProgressBar fx:id="progress" layoutX="17.0" layoutY="467.0" prefHeight="20.0" prefWidth="91.0" AnchorPane.bottomAnchor="15.022406487211537" AnchorPane.leftAnchor="17.0" />
-      <Separator layoutX="15.0" layoutY="162.0" prefHeight="5.0" prefWidth="696.0" AnchorPane.leftAnchor="14.760753589610658" AnchorPane.rightAnchor="15.743681980306633" />
-      <TextField fx:id="txtCantidad" layoutX="395.0" layoutY="124.0" prefHeight="27.0" prefWidth="85.0" AnchorPane.rightAnchor="246.09175990000915" />
-      <ComboBox fx:id="cmbProducto" layoutX="82.0" layoutY="124.0" onAction="#alCambiarProducto" prefHeight="28.0" prefWidth="231.0" AnchorPane.leftAnchor="81.68926622565007" AnchorPane.rightAnchor="413.2475383349084" />
-      <Label layoutX="12.0" layoutY="129.0" text="Producto:" AnchorPane.leftAnchor="12.0" />
-      <Label layoutX="323.0" layoutY="129.0" text="Cantidad:" AnchorPane.rightAnchor="341.06721946163464" />
-      <TextField fx:id="txtPrecio" layoutX="541.0" layoutY="124.0" prefHeight="28.0" prefWidth="84.0" AnchorPane.rightAnchor="101.09069292442764" />
-      <Label layoutX="490.0" layoutY="129.0" text="Precio:" AnchorPane.rightAnchor="192.04801390116756" />
-      <Button fx:id="btnAgregarItem" layoutX="640.0" layoutY="125.0" mnemonicParsing="false" onAction="#agregarItemDetalle" text="+" AnchorPane.rightAnchor="58.03094229186354">
-         <cursor>
-            <Cursor fx:constant="CROSSHAIR" />
-         </cursor>
-         <effect>
-            <DropShadow />
-         </effect>
-      </Button>
-      <Button fx:id="btnQuitarItem" layoutX="684.0" layoutY="126.0" mnemonicParsing="false" onAction="#quitarItemDetalle" text="X" textFill="RED" AnchorPane.rightAnchor="16.028808340700493">
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor>
-      </Button>
-      <Label layoutX="505.0" layoutY="435.0" text="Total: ($)" AnchorPane.bottomAnchor="51.01813858488553" AnchorPane.rightAnchor="162.0640185348901" />
-      <TextField fx:id="txtTotal" editable="false" layoutX="572.0" layoutY="429.0" prefHeight="28.0" prefWidth="140.0" AnchorPane.bottomAnchor="45.03094229186355" AnchorPane.rightAnchor="14.150443556991746" />
-   </children>
+<AnchorPane prefHeight="620.0" prefWidth="820.0" xmlns="http://javafx.com/javafx/13"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.ubp.edu.ar.ejemplocompletofx.controladores.EditarPedidoController">
+    <children>
+        <Label layoutX="18.0" layoutY="16.0" text="Registrar pedido"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+
+        <TitledPane layoutX="18.0" layoutY="55.0" prefWidth="784.0"
+                    text="1. Identificar cliente" collapsible="false">
+            <content>
+                <AnchorPane prefHeight="125.0">
+                    <ComboBox fx:id="cmbTipoDocumento" layoutX="15.0" layoutY="15.0" prefWidth="100.0" />
+                    <TextField fx:id="txtDocumento" layoutX="125.0" layoutY="15.0"
+                               prefWidth="180.0" promptText="Número de documento" />
+                    <Button layoutX="315.0" layoutY="15.0" text="Buscar cliente"
+                            onAction="#buscarCliente" />
+                    <Label layoutX="15.0" layoutY="58.0" text="Cliente:" />
+                    <Label fx:id="lblCliente" layoutX="95.0" layoutY="58.0" text="-" />
+                    <Label layoutX="15.0" layoutY="88.0" text="Zona:" />
+                    <Label fx:id="lblZona" layoutX="95.0" layoutY="88.0" text="-" />
+                    <Label layoutX="360.0" layoutY="58.0" text="Distribuidor:" />
+                    <Label fx:id="lblDistribuidor" layoutX="450.0" layoutY="58.0" text="-" />
+                    <Label layoutX="360.0" layoutY="88.0" text="Entrega estimada:" />
+                    <Label fx:id="lblFechaEstimada" layoutX="480.0" layoutY="88.0" text="-" />
+                </AnchorPane>
+            </content>
+        </TitledPane>
+
+        <TitledPane layoutX="18.0" layoutY="225.0" prefWidth="784.0"
+                    text="2. Agregar productos" collapsible="false">
+            <content>
+                <AnchorPane prefHeight="300.0">
+                    <ComboBox fx:id="cmbProducto" layoutX="15.0" layoutY="15.0"
+                              prefWidth="330.0" promptText="Producto"
+                              onAction="#alCambiarProducto" />
+                    <TextField fx:id="txtCantidad" layoutX="355.0" layoutY="15.0"
+                               prefWidth="100.0" promptText="Cantidad" />
+                    <TextField fx:id="txtPrecio" layoutX="465.0" layoutY="15.0"
+                               prefWidth="120.0" promptText="Precio" editable="false" />
+                    <Button layoutX="595.0" layoutY="15.0" text="Agregar"
+                            onAction="#agregarItemDetalle" />
+                    <Button layoutX="675.0" layoutY="15.0" text="Quitar"
+                            onAction="#quitarItemDetalle" />
+                    <TableView fx:id="tableView" layoutX="15.0" layoutY="55.0"
+                               prefHeight="200.0" prefWidth="750.0">
+                        <columns>
+                            <TableColumn prefWidth="340.0" text="Producto" />
+                            <TableColumn prefWidth="120.0" text="Cantidad" />
+                            <TableColumn prefWidth="135.0" text="Precio" />
+                            <TableColumn prefWidth="150.0" text="Subtotal" />
+                        </columns>
+                    </TableView>
+                    <Label layoutX="575.0" layoutY="270.0" text="Total:" />
+                    <TextField fx:id="txtTotal" layoutX="625.0" layoutY="263.0"
+                               prefWidth="140.0" editable="false" text="0.00" />
+                </AnchorPane>
+            </content>
+        </TitledPane>
+
+        <ProgressBar fx:id="progress" layoutX="18.0" layoutY="580.0" prefWidth="120.0" />
+        <Button fx:id="btnGuardar" layoutX="650.0" layoutY="572.0"
+                text="Guardar pedido" onAction="#guardarPedido" />
+        <Button fx:id="btnCerrar" layoutX="755.0" layoutY="572.0"
+                text="Cerrar" onAction="#cerrarVentana" />
+    </children>
 </AnchorPane>
