@@ -18,8 +18,13 @@ public class PedidoDto {
     private int id;
     private int nro;
     private Date fecha;
+    private Date fechaEstimada;
+    private Date fechaEntrega;
     private ClienteDto cliente;
     private VendedorDto vendedor;
+    private DistribuidorDto distribuidor;
+    private String estado;
+    private String observacion;
     private List<DetallePedidoDto> detalles;
 
     public PedidoDto() {
@@ -104,6 +109,46 @@ public class PedidoDto {
 
     public void setDetalles(List<DetallePedidoDto> detalles) {
         this.detalles = detalles;
+    }
+
+    public Date getFechaEstimada() {
+        return fechaEstimada;
+    }
+
+    public void setFechaEstimada(Date fechaEstimada) {
+        this.fechaEstimada = fechaEstimada;
+    }
+
+    public Date getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    public void setFechaEntrega(Date fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
+    }
+
+    public DistribuidorDto getDistribuidor() {
+        return distribuidor;
+    }
+
+    public void setDistribuidor(DistribuidorDto distribuidor) {
+        this.distribuidor = distribuidor;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
        
     

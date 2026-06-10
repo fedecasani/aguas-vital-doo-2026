@@ -16,6 +16,9 @@ public class ProductoDto {
     private String codBarra;
     private float precio;
     private float cantidad;
+    private String tipo;
+    private int capacidadLitros;
+    private boolean activo;
 
     public ProductoDto() {
     }
@@ -66,5 +69,29 @@ public class ProductoDto {
 
     public void setCantidad(float cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public int getCapacidadLitros() {
+        return capacidadLitros;
+    }
+
+    public void setCapacidadLitros(int capacidadLitros) {
+        this.capacidadLitros = capacidadLitros;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.ubp.edu.ar.ejemplocompletofx.dao;
 
 import java.sql.Connection;
@@ -12,382 +8,312 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import org.ubp.edu.ar.ejemplocompletofx.dto.BarrioDto;
 import org.ubp.edu.ar.ejemplocompletofx.dto.ClienteDto;
 import org.ubp.edu.ar.ejemplocompletofx.dto.DetallePedidoDto;
+import org.ubp.edu.ar.ejemplocompletofx.dto.DistribuidorDto;
+import org.ubp.edu.ar.ejemplocompletofx.dto.PagoDto;
 import org.ubp.edu.ar.ejemplocompletofx.dto.PedidoDto;
 import org.ubp.edu.ar.ejemplocompletofx.dto.ProductoDto;
-import org.ubp.edu.ar.ejemplocompletofx.dto.VendedorDto;
+import org.ubp.edu.ar.ejemplocompletofx.dto.ZonaDto;
 
-/**
- *
- * @author agustin
- */
 public class PedidoDao implements Dao<PedidoDto> {
 
-    private ConexionSql conexion;
+    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    private static final String SELECT_PEDIDO
+            = "SELECT p.id, p.nro, p.fecha_solicitud, p.fecha_estimada, p.fecha_entrega, "
+            + "p.estado, p.observacion, "
+            + "c.id cliente_id, c.tipo_documento, c.nro_documento, c.nombre cliente_nombre, "
+            + "c.apellido cliente_apellido, c.razon_social, c.direccion, c.telefono, c.activo, "
+            + "b.id barrio_id, b.nombre barrio_nombre, z.id zona_id, z.nombre zona_nombre, "
+            + "d.id distribuidor_id, d.legajo, d.nombre distribuidor_nombre, "
+            + "d.apellido distribuidor_apellido, d.capacidad_diaria "
+            + "FROM pedido p "
+            + "JOIN cliente c ON c.id = p.cliente_id "
+            + "JOIN barrio b ON b.id = c.barrio_id "
+            + "JOIN zona z ON z.id = b.zona_id "
+            + "JOIN distribuidor d ON d.id = p.distribuidor_id ";
 
     @Override
     public PedidoDto buscar(PedidoDto dto) {
-        this.conexion = new ConexionSql();
-        Connection con;
-        PreparedStatement sentencia = null;
-        ResultSet rs = null;
-
-        try {
-            List<DetallePedidoDto> listaDet = new ArrayList<>();
-            con = this.conexion.getConnection();
-            String sql = "select d.id as idDetPed, d.cantidad, d.precioVta, "
-                    + "p.id as idProd, p.nombre, p.codBarra, p.precio, p.cantidad "
-                    + "from pedido pe, detallepedido d, producto p "
-                    + "where pe.id = d.idPedido "
-                    + "and p.id = d.idProducto "
-                    + "and pe.nro = ?";
-            sentencia = con.prepareStatement(sql);
-            sentencia.setInt(1, dto.getNro());
-
-            rs = sentencia.executeQuery();
-
-            int id, idProd;
-            String nombreProd, codBarraProd;
-            float precioVtaDet, cantDet, precioProd, cantProd;
-            DetallePedidoDto det;
-
-            while (rs.next()) {
-                id = rs.getInt("idDetPed");
-                cantDet = rs.getFloat("cantidad");
-                precioVtaDet = rs.getFloat("precioVta");
-                idProd = rs.getInt("idProd");
-                nombreProd = rs.getString("nombre");
-                codBarraProd = rs.getString("codBarra");
-                precioProd = rs.getFloat("precio");
-                cantProd = rs.getFloat("cantidad");
-
-                det = new DetallePedidoDto(id, dto,
-                        new ProductoDto(idProd, nombreProd, codBarraProd, precioProd, cantProd),
-                        cantDet, precioVtaDet);
-                listaDet.add(det);
+        String sql = SELECT_PEDIDO + "WHERE p.nro = ?";
+        try (ConexionSql conexion = new ConexionSql();
+                PreparedStatement statement = conexion.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, dto.getNro());
+            try (ResultSet rs = statement.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                PedidoDto pedido = mapearPedido(rs);
+                pedido.setDetalles(listarDetalles(conexion.getConnection(), pedido));
+                return pedido;
             }
-            dto.setDetalles(listaDet);
-        } catch (SQLException e) {
-            System.err.println(e);
-        } finally {
-            try {
-                rs.close();
-                sentencia.close();
-                this.conexion.cerrar();
-            } catch (Exception ex) {
-
-            }
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo buscar el pedido", ex);
         }
-        return dto;
     }
 
     @Override
     public List<PedidoDto> listarPorCriterio(PedidoDto dto) {
-        this.conexion = new ConexionSql();
-        Connection con;
-        PreparedStatement sentencia = null;
-        ResultSet rs = null;
-        List<PedidoDto> lista = new ArrayList<>();
-
-        try {
-            con = this.conexion.getConnection();
-            String sql = "select p.id as idPed, p.nro, p.fecha, "
-                    + "c.id as idCli, c.nombre, c.apellido, c.dni, "
-                    + "v.id as idVen, v.nombre as nomVen, v.apellido as apeVen, v.legajo "
-                    + "from pedido p, cliente c, vendedor v "
-                    + "where p.idCliente = c.id "
-                    + "and p.idVendedor = v.id "
-                    + "and p.nro = ? "
-                    + "order by p.nro, p.fecha";
-            sentencia = con.prepareStatement(sql);
-            sentencia.setInt(1, dto.getNro());
-
-            rs = sentencia.executeQuery();
-
-            int id, nro, idCli, idVend;
-            Date fecha;
-            String nombreCli, apellidoCli, dniCli;
-            String nombreVen, apellidoVen, legajoVen;
-            PedidoDto pedido;
-
-            while (rs.next()) {
-                id = rs.getInt("idPed");
-                nro = rs.getInt("nro");
-                fecha = rs.getDate("fecha");
-                idCli = rs.getInt("idCli");
-                nombreCli = rs.getString("nombre");
-                apellidoCli = rs.getString("apellido");
-                dniCli = rs.getString("dni");
-                idVend = rs.getInt("idVen");
-                nombreVen = rs.getString("nomVen");
-                apellidoVen = rs.getString("apeVen");
-                legajoVen = rs.getString("legajo");
-                pedido = new PedidoDto(id, nro, fecha,
-                        new ClienteDto(idCli, nombreCli, apellidoCli, dniCli),
-                        new VendedorDto(idVend, nombreVen, apellidoVen, legajoVen));
-                lista.add(pedido);
-            }
-
-        } catch (SQLException e) {
-            System.err.println(e);
-        } finally {
-            try {
-                rs.close();
-                sentencia.close();
-                this.conexion.cerrar();
-            } catch (Exception ex) {
-
-            }
-        }
-        return lista;
+        String sql = SELECT_PEDIDO + "WHERE p.nro = ? ORDER BY p.nro";
+        return ejecutarListado(sql, dto.getNro());
     }
 
     @Override
     public List<PedidoDto> listarTodos() {
-        this.conexion = new ConexionSql();
-        Connection con;
-        Statement sentencia = null;
-        ResultSet rs = null;
-        List<PedidoDto> lista = new ArrayList<>();
-
-        try {
-            con = this.conexion.getConnection();
-            String sql = "select p.id as idPedido, p.nro, p.fecha, "
-                    + "c.id as idCliente, c.nombre as nombreCli, c.apellido as apeCli, c.dni, "
-                    + "v.id as idVendedor, v.nombre as nombreVen, v.apellido as apeVen, v.legajo "
-                    + "from pedido p, cliente c, vendedor v "
-                    + "where p.idCliente = c.id "
-                    + "and p.idVendedor = v.id "
-                    + "order by p.nro, p.fecha";
-            sentencia = con.createStatement();
-
-            rs = sentencia.executeQuery(sql);
-
-            int id, nro, idCli, idVend;
-            Date fecha;
-            String nombreCli, apellidoCli, dniCli;
-            String nombreVen, apellidoVen, legajoVen;
-            PedidoDto pedido;
-
-            while (rs.next()) {
-                id = rs.getInt("idPedido");
-                nro = rs.getInt("nro");
-                fecha = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("fecha"));
-                idCli = rs.getInt("idCliente");
-                nombreCli = rs.getString("nombreCli");
-                apellidoCli = rs.getString("apeCli");
-                dniCli = rs.getString("dni");
-                idVend = rs.getInt("idVendedor");
-                nombreVen = rs.getString("nombreVen");
-                apellidoVen = rs.getString("apeVen");
-                legajoVen = rs.getString("legajo");
-                pedido = new PedidoDto(id, nro, fecha,
-                        new ClienteDto(idCli, nombreCli, apellidoCli, dniCli),
-                        new VendedorDto(idVend, nombreVen, apellidoVen, legajoVen));
-                lista.add(pedido);
-            }
-
-        } catch (SQLException | ParseException e) {
-            System.err.println(e);
-        } finally {
-            try {
-                rs.close();
-                sentencia.close();
-                this.conexion.cerrar();
-            } catch (Exception ex) {
-
-            }
-        }
-        return lista;
+        String sql = SELECT_PEDIDO + "ORDER BY p.nro DESC";
+        return ejecutarListado(sql, null);
     }
 
     @Override
     public boolean insertar(PedidoDto dto) {
-        this.conexion = new ConexionSql();
-        Connection con = null;
-        PreparedStatement sentencia = null;
+        String insertPedido = "INSERT INTO pedido (nro, fecha_solicitud, fecha_estimada, "
+                + "cliente_id, distribuidor_id, estado) "
+                + "VALUES ((SELECT COALESCE(MAX(nro), 0) + 1 FROM pedido), ?, ?, ?, ?, 'PENDIENTE')";
+        String insertDetalle = "INSERT INTO detallepedido "
+                + "(pedido_id, producto_id, cantidad, precio_venta) VALUES (?, ?, ?, ?)";
 
-        try {
-            con = this.conexion.getConnection();
-            con.setAutoCommit(false);
-            String sql = "insert into pedido (fecha, idCliente, idVendedor, nro) "
-                    + "values(?,(select c.id from cliente c where c.dni like ?), "
-                    + "(select v.id from vendedor v where v.legajo like ?), "
-                    + "(select (max(p.nro)+1) from pedido p))";
-            sentencia = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            sentencia.setString(1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dto.getFecha()));
-            sentencia.setString(2, dto.getCliente().getDni());
-            sentencia.setString(3, dto.getVendedor().getLegajo());
-
-            int resultado = sentencia.executeUpdate();
-
-            if (resultado <= 0) {
-                con.rollback();
-                return false;
-            }
-
-            //obtengo las ultimas PK generada
-            ResultSet rs = sentencia.getGeneratedKeys();
-            int idPedidoUltimo = 0;
-            while (rs.next()) {
-                idPedidoUltimo = rs.getInt(1);
-            }
-
-            for (DetallePedidoDto detalle : dto.getDetalles()) {
-                sql = "insert into detallepedido (idPedido, idProducto, cantidad, precioVta) "
-                        + "values(?,(select p.id from producto p where p.codBarra like ?),?,?)";
-                sentencia = con.prepareStatement(sql);
-                sentencia.setInt(1, idPedidoUltimo);
-                sentencia.setString(2, detalle.getProducto().getCodBarra());
-                sentencia.setFloat(3, detalle.getCantidad());
-                sentencia.setFloat(4, detalle.getPrecioVta());
-                resultado = sentencia.executeUpdate();
-                if (resultado <= 0) {
-                    con.rollback();
+        try (ConexionSql conexion = new ConexionSql()) {
+            Connection connection = conexion.getConnection();
+            connection.setAutoCommit(false);
+            try (PreparedStatement pedidoStatement = connection.prepareStatement(
+                    insertPedido, Statement.RETURN_GENERATED_KEYS)) {
+                pedidoStatement.setString(1, format(dto.getFecha()));
+                pedidoStatement.setString(2, format(dto.getFechaEstimada()));
+                pedidoStatement.setInt(3, dto.getCliente().getId());
+                pedidoStatement.setInt(4, dto.getDistribuidor().getId());
+                if (pedidoStatement.executeUpdate() != 1) {
+                    connection.rollback();
                     return false;
                 }
-            }
-            con.commit();
-            return true;
-        } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-
+                int pedidoId;
+                try (ResultSet keys = pedidoStatement.getGeneratedKeys()) {
+                    if (!keys.next()) {
+                        connection.rollback();
+                        return false;
+                    }
+                    pedidoId = keys.getInt(1);
                 }
+                try (PreparedStatement detalleStatement = connection.prepareStatement(insertDetalle)) {
+                    for (DetallePedidoDto detalle : dto.getDetalles()) {
+                        detalleStatement.setInt(1, pedidoId);
+                        detalleStatement.setInt(2, detalle.getProducto().getId());
+                        detalleStatement.setFloat(3, detalle.getCantidad());
+                        detalleStatement.setFloat(4, detalle.getPrecioVta());
+                        detalleStatement.addBatch();
+                    }
+                    detalleStatement.executeBatch();
+                }
+                connection.commit();
+                return true;
+            } catch (SQLException ex) {
+                connection.rollback();
+                throw ex;
+            } finally {
+                connection.setAutoCommit(true);
             }
-            return false;
-        } finally {
-            try {
-                sentencia.close();
-                this.conexion.cerrar();
-            } catch (Exception ex) {
-                System.err.println(ex);
-            }
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo registrar el pedido", ex);
         }
     }
 
     @Override
     public boolean modificar(PedidoDto dto) {
-        this.conexion = new ConexionSql();
-        Connection con = null;
-        PreparedStatement sentencia = null;
+        String sql = "UPDATE pedido SET estado = ?, fecha_entrega = ?, observacion = ? WHERE nro = ?";
+        try (ConexionSql conexion = new ConexionSql();
+                PreparedStatement statement = conexion.getConnection().prepareStatement(sql)) {
+            statement.setString(1, dto.getEstado());
+            statement.setString(2, dto.getFechaEntrega() == null ? null : format(dto.getFechaEntrega()));
+            statement.setString(3, dto.getObservacion());
+            statement.setInt(4, dto.getNro());
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo actualizar el pedido", ex);
+        }
+    }
 
-        try {
-            con = this.conexion.getConnection();
-            con.setAutoCommit(false);
-            String sql = "update pedido set fecha=?, "
-                    + "idCliente=(select c.id from cliente c where c.dni like ?), "
-                    + "idVendedor=(select v.id from vendedor v where v.legajo like ?) "
-                    + "where nro=?";
-            sentencia = con.prepareStatement(sql);
-            sentencia.setString(1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dto.getFecha()));
-            sentencia.setString(2, dto.getCliente().getDni());
-            sentencia.setString(3, dto.getVendedor().getLegajo());
-            sentencia.setInt(4, dto.getNro());
-
-            int resultado = sentencia.executeUpdate();
-
-            if (resultado <= 0) {
-                con.rollback();
-                return false;
-            }
-
-            sql = "delete from detallepedido "
-                    + "where idPedido=(select p1.id from pedido p1 where p1.nro=?)";
-
-            sentencia = con.prepareStatement(sql);
-            sentencia.setInt(1, dto.getNro());
-            sentencia.executeUpdate();
-
-            for (DetallePedidoDto detalle : dto.getDetalles()) {
-                sql = "insert into detallepedido (idPedido, idProducto, cantidad, precioVta) "
-                        + "values((select p1.id from pedido p1 where p1.nro=?), "
-                        + "(select p.id from producto p where p.codBarra like ?),?,?)";
-                sentencia = con.prepareStatement(sql);
-                sentencia.setInt(1, detalle.getPedido().getNro());
-                sentencia.setString(2, detalle.getProducto().getCodBarra());
-                sentencia.setFloat(3, detalle.getCantidad());
-                sentencia.setFloat(4, detalle.getPrecioVta());
-                resultado = sentencia.executeUpdate();
-                if (resultado <= 0) {
-                    con.rollback();
+    public boolean actualizarConPago(PedidoDto pedido, PagoDto pago) {
+        String updatePedido = "UPDATE pedido SET estado = 'ENTREGADO', fecha_entrega = ?, "
+                + "observacion = ? WHERE nro = ? AND estado = 'PENDIENTE'";
+        String insertPago = "INSERT INTO pago (pedido_id, fecha_hora, forma_pago, monto) "
+                + "SELECT id, ?, ?, ? FROM pedido WHERE nro = ?";
+        try (ConexionSql conexion = new ConexionSql()) {
+            Connection connection = conexion.getConnection();
+            connection.setAutoCommit(false);
+            try (PreparedStatement pedidoStatement = connection.prepareStatement(updatePedido);
+                    PreparedStatement pagoStatement = connection.prepareStatement(insertPago)) {
+                pedidoStatement.setString(1, format(pedido.getFechaEntrega()));
+                pedidoStatement.setString(2, pedido.getObservacion());
+                pedidoStatement.setInt(3, pedido.getNro());
+                if (pedidoStatement.executeUpdate() != 1) {
+                    connection.rollback();
                     return false;
                 }
-            }
-            con.commit();
-            return true;
-        } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-
+                pagoStatement.setString(1, format(pago.getFechaHora()));
+                pagoStatement.setString(2, pago.getFormaPago().name());
+                pagoStatement.setFloat(3, pago.getMonto());
+                pagoStatement.setInt(4, pedido.getNro());
+                if (pagoStatement.executeUpdate() != 1) {
+                    connection.rollback();
+                    return false;
                 }
+                connection.commit();
+                return true;
+            } catch (SQLException ex) {
+                connection.rollback();
+                throw ex;
+            } finally {
+                connection.setAutoCommit(true);
             }
-            return false;
-        } finally {
-            try {
-                sentencia.close();
-                this.conexion.cerrar();
-            } catch (Exception ex) {
-                System.err.println(ex);
-            }
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo registrar la entrega y el pago", ex);
         }
     }
 
     @Override
     public boolean borrar(PedidoDto dto) {
-        this.conexion = new ConexionSql();
-        Connection con = null;
-        PreparedStatement sentencia = null;
-
-        try {
-            con = this.conexion.getConnection();
-            con.setAutoCommit(false);
-            String sql = "delete from detallepedido "
-                    + "where idPedido=(select p1.id from pedido p1 where p1.nro=?)";
-            sentencia = con.prepareStatement(sql);
-            sentencia.setInt(1, dto.getNro());
-            int resultado = sentencia.executeUpdate();
-
-            if (resultado <= 0) {
-                con.rollback();
-                return false;
-            }
-
-            sql = "delete from pedido "
-                    + "where nro=?";
-            sentencia = con.prepareStatement(sql);
-            sentencia.setInt(1, dto.getNro());
-            resultado = sentencia.executeUpdate();
-            if (resultado <= 0) {
-                con.rollback();
-                return false;
-            }
-            con.commit();
-            return true;
-        } catch (SQLException e) {
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-
-                }
-            }
-            return false;
-        } finally {
-            try {
-                sentencia.close();
-                this.conexion.cerrar();
-            } catch (Exception ex) {
-                System.err.println(ex);
-            }
+        String sql = "UPDATE pedido SET estado = 'CANCELADO', observacion = ? "
+                + "WHERE nro = ? AND estado = 'PENDIENTE'";
+        try (ConexionSql conexion = new ConexionSql();
+                PreparedStatement statement = conexion.getConnection().prepareStatement(sql)) {
+            statement.setString(1, dto.getObservacion());
+            statement.setInt(2, dto.getNro());
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo cancelar el pedido", ex);
         }
     }
 
+    public DistribuidorDto buscarDistribuidorPorZona(int zonaId) {
+        DistribuidorDto criterio = new DistribuidorDto();
+        criterio.setZona(new ZonaDto(zonaId, null));
+        List<DistribuidorDto> distribuidores = new DistribuidorDao().listarPorCriterio(criterio);
+        return distribuidores.isEmpty() ? null : distribuidores.get(0);
+    }
+
+    public Date calcularFechaEstimada(DistribuidorDto distribuidor, Date fechaSolicitud) {
+        String sql = "SELECT COUNT(*) FROM pedido "
+                + "WHERE distribuidor_id = ? AND estado = 'PENDIENTE'";
+        try (ConexionSql conexion = new ConexionSql();
+                PreparedStatement statement = conexion.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, distribuidor.getId());
+            int pendientes;
+            try (ResultSet rs = statement.executeQuery()) {
+                pendientes = rs.next() ? rs.getInt(1) : 0;
+            }
+            int diasAdicionales = pendientes / distribuidor.getCapacidadDiaria();
+            int turno = pendientes % distribuidor.getCapacidadDiaria();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(fechaSolicitud);
+            calendar.add(Calendar.DAY_OF_MONTH, diasAdicionales + 1);
+            calendar.set(Calendar.HOUR_OF_DAY, 9 + turno);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            return calendar.getTime();
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo calcular la fecha estimada", ex);
+        }
+    }
+
+    private List<PedidoDto> ejecutarListado(String sql, Integer nro) {
+        List<PedidoDto> pedidos = new ArrayList<>();
+        try (ConexionSql conexion = new ConexionSql();
+                PreparedStatement statement = conexion.getConnection().prepareStatement(sql)) {
+            if (nro != null) {
+                statement.setInt(1, nro);
+            }
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    pedidos.add(mapearPedido(rs));
+                }
+            }
+            return pedidos;
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudieron listar los pedidos", ex);
+        }
+    }
+
+    private List<DetallePedidoDto> listarDetalles(Connection connection, PedidoDto pedido)
+            throws SQLException {
+        String sql = "SELECT dp.id, dp.cantidad, dp.precio_venta, "
+                + "pr.id producto_id, pr.codigo, pr.nombre, pr.tipo, "
+                + "pr.capacidad_litros, pr.precio, pr.activo "
+                + "FROM detallepedido dp JOIN producto pr ON pr.id = dp.producto_id "
+                + "WHERE dp.pedido_id = ?";
+        List<DetallePedidoDto> detalles = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, pedido.getId());
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    ProductoDto producto = new ProductoDto();
+                    producto.setId(rs.getInt("producto_id"));
+                    producto.setCodBarra(rs.getString("codigo"));
+                    producto.setNombre(rs.getString("nombre"));
+                    producto.setTipo(rs.getString("tipo"));
+                    producto.setCapacidadLitros(rs.getInt("capacidad_litros"));
+                    producto.setPrecio(rs.getFloat("precio"));
+                    producto.setActivo(rs.getBoolean("activo"));
+                    detalles.add(new DetallePedidoDto(
+                            rs.getInt("id"), pedido, producto,
+                            rs.getFloat("cantidad"), rs.getFloat("precio_venta")));
+                }
+            }
+        }
+        return detalles;
+    }
+
+    private PedidoDto mapearPedido(ResultSet rs) throws SQLException {
+        ZonaDto zona = new ZonaDto(rs.getInt("zona_id"), rs.getString("zona_nombre"));
+        BarrioDto barrio = new BarrioDto(
+                rs.getInt("barrio_id"), rs.getString("barrio_nombre"), zona);
+        ClienteDto cliente = new ClienteDto();
+        cliente.setId(rs.getInt("cliente_id"));
+        cliente.setTipoDocumento(rs.getString("tipo_documento"));
+        cliente.setDni(rs.getString("nro_documento"));
+        cliente.setNombre(rs.getString("cliente_nombre"));
+        cliente.setApellido(rs.getString("cliente_apellido"));
+        cliente.setRazonSocial(rs.getString("razon_social"));
+        cliente.setDireccion(rs.getString("direccion"));
+        cliente.setTelefono(rs.getString("telefono"));
+        cliente.setActivo(rs.getBoolean("activo"));
+        cliente.setBarrio(barrio);
+        DistribuidorDto distribuidor = new DistribuidorDto(
+                rs.getInt("distribuidor_id"), rs.getString("legajo"),
+                rs.getString("distribuidor_nombre"), rs.getString("distribuidor_apellido"),
+                rs.getInt("capacidad_diaria"), zona);
+        PedidoDto pedido = new PedidoDto();
+        pedido.setId(rs.getInt("id"));
+        pedido.setNro(rs.getInt("nro"));
+        pedido.setFecha(parse(rs.getString("fecha_solicitud")));
+        pedido.setFechaEstimada(parse(rs.getString("fecha_estimada")));
+        pedido.setFechaEntrega(parse(rs.getString("fecha_entrega")));
+        pedido.setEstado(rs.getString("estado"));
+        pedido.setObservacion(rs.getString("observacion"));
+        pedido.setCliente(cliente);
+        pedido.setDistribuidor(distribuidor);
+        pedido.setDetalles(new ArrayList<>());
+        return pedido;
+    }
+
+    private String format(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return new SimpleDateFormat(DATE_PATTERN).format(date);
+    }
+
+    private Date parse(String value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return new SimpleDateFormat(DATE_PATTERN).parse(value);
+        } catch (ParseException ex) {
+            throw new IllegalStateException("Fecha invalida en la base de datos: " + value, ex);
+        }
+    }
 }
