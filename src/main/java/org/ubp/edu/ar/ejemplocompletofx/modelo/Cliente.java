@@ -18,6 +18,12 @@ public class Cliente extends Modelo {
     private String nombre;
     private String apellido;
     private String dni;
+    private String tipoDocumento;
+    private String razonSocial;
+    private String direccion;
+    private String telefono;
+    private Barrio barrio;
+    private boolean activo = true;
 
     public Cliente() {
         this.dao = FabricaDao.fabricar("ClienteDao");
@@ -51,6 +57,58 @@ public class Cliente extends Modelo {
 
     public void setDni(String dni) {
         this.dni = dni;
+    }
+
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+
+    public String getRazonSocial() {
+        return razonSocial;
+    }
+
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public Barrio getBarrio() {
+        return barrio;
+    }
+
+    public void setBarrio(Barrio barrio) {
+        this.barrio = barrio;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    public Zona getZona() {
+        return barrio != null ? barrio.getZona() : null;
     }
 
     @Override

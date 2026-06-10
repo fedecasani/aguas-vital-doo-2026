@@ -23,6 +23,8 @@ import org.ubp.edu.ar.ejemplocompletofx.dao.Dao;
 import org.ubp.edu.ar.ejemplocompletofx.dao.PedidoDao;
 import org.ubp.edu.ar.ejemplocompletofx.dto.PedidoDto;
 import org.ubp.edu.ar.ejemplocompletofx.factories.FabricaDao;
+import org.ubp.edu.ar.ejemplocompletofx.estado.EstadoPedido;
+import org.ubp.edu.ar.ejemplocompletofx.estado.PedidoPendiente;
 
 /**
  *
@@ -34,6 +36,10 @@ public class Pedido extends Modelo {
     private Cliente cliente;
     private Vendedor vendedor;
     private List<DetallePedido> detalles = new ArrayList<>();
+    private Date fechaHoraEstimada;
+    private Date fechaHoraEntrega;
+    private String observacion;
+    private EstadoPedido estado = new PedidoPendiente();
 
     public Pedido() {
         this.dao = FabricaDao.fabricar("PedidoDao");
@@ -86,6 +92,54 @@ public class Pedido extends Modelo {
 
     public void setDetalles(List<DetallePedido> detalles) {
         this.detalles = detalles;
+    }
+
+    public Date getFechaHoraEstimada() {
+        return fechaHoraEstimada;
+    }
+
+    public void setFechaHoraEstimada(Date fechaHoraEstimada) {
+        this.fechaHoraEstimada = fechaHoraEstimada;
+    }
+
+    public Date getFechaHoraEntrega() {
+        return fechaHoraEntrega;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public EstadoPedido getEstado() {
+        return estado;
+    }
+
+    public String getNombreEstado() {
+        return estado.getNombre();
+    }
+
+    public void registrarEntrega(Date fechaHoraEntrega) {
+        estado.registrarEntrega(this, fechaHoraEntrega);
+    }
+
+    public void mantenerPendiente(String motivo) {
+        estado.mantenerPendiente(this, motivo);
+    }
+
+    public void cancelar(String motivo) {
+        estado.cancelar(this, motivo);
+    }
+
+    public void cambiarEstado(EstadoPedido estado) {
+        if (estado == null) {
+            throw new IllegalArgumentException("El estado es obligatorio");
+        }
+        this.estado = estado;
+    }
+
+    public void establecerDatosEntrega(Date fechaHoraEntrega, String observacion) {
+        this.fechaHoraEntrega = fechaHoraEntrega;
+        this.observacion = observacion;
     }
 
     public ModelMapper getMapper() {

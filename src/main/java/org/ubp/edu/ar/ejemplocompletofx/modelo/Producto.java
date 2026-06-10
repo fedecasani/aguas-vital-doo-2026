@@ -19,6 +19,8 @@ public class Producto extends Modelo {
     private String codBarra;
     private float precio;
     private float cantidad;
+    private TipoProducto tipo;
+    private int capacidadLitros;
 
     public Producto() {
         this.dao = new ProductoDao();
@@ -65,5 +67,24 @@ public class Producto extends Modelo {
 
     public void setCantidad(float cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public TipoProducto getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoProducto tipo) {
+        this.tipo = tipo;
+    }
+
+    public int getCapacidadLitros() {
+        return capacidadLitros;
+    }
+
+    public void setCapacidadLitros(int capacidadLitros) {
+        if (capacidadLitros <= 0) {
+            throw new IllegalArgumentException("La capacidad debe ser mayor a cero");
+        }
+        this.capacidadLitros = capacidadLitros;
     }
 }
