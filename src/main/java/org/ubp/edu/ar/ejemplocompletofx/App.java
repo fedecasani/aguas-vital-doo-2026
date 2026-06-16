@@ -60,14 +60,22 @@ public class App extends Application {
      * @throws IOException si no se encuentra el nombre del archivo dispara una excepción de IO
      */
     public static FXMLLoader openFXML(String fxml, String title, Modality modality) throws IOException {
+        return openFXMLResource(fxml + ".fxml", title, modality);
+    }
+
+    /**
+     * Abre una vista ubicada en cualquier ruta del classpath (ej. /fxml/ClientesVista.fxml).
+     */
+    public static FXMLLoader openFXMLResource(String resourcePath, String title, Modality modality) throws IOException {
+        java.net.URL location = App.class.getResource(resourcePath);
+        if (location == null) {
+            throw new IOException("No se encontró la vista: " + resourcePath);
+        }
         Stage newWindow = new Stage();
         newWindow.setTitle(title);
-        FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        FXMLLoader loader = new FXMLLoader(location);
         newWindow.setScene(new Scene(loader.load()));
-        newWindow.setResizable(false);
-//        newWindow.initStyle(StageStyle.UTILITY);
-//        newWindow.toFront();
-//        newWindow.initOwner(loader.getRoot());
+        newWindow.setResizable(true);
         newWindow.initModality(modality);
         newWindow.show();
         return loader;

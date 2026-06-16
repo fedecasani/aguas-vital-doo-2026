@@ -65,17 +65,49 @@ public class ProductoDao implements Dao<ProductoDto> {
 
     @Override
     public boolean insertar(ProductoDto dto) {
-        throw new UnsupportedOperationException("Alta de productos fuera de alcance");
+        String sql = "INSERT INTO producto (codigo, nombre, tipo, capacidad_litros, precio, activo) "
+                + "VALUES (?, ?, ?, ?, ?, 1)";
+        try (ConexionSql conexion = new ConexionSql();
+                PreparedStatement statement = conexion.getConnection().prepareStatement(sql)) {
+            statement.setString(1, dto.getCodBarra());
+            statement.setString(2, dto.getNombre());
+            statement.setString(3, dto.getTipo());
+            statement.setInt(4, dto.getCapacidadLitros());
+            statement.setFloat(5, dto.getPrecio());
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo registrar el producto", ex);
+        }
     }
 
     @Override
     public boolean modificar(ProductoDto dto) {
-        throw new UnsupportedOperationException("Actualizacion de precios fuera de alcance");
+        String sql = "UPDATE producto SET codigo = ?, nombre = ?, tipo = ?, "
+                + "capacidad_litros = ?, precio = ? WHERE id = ?";
+        try (ConexionSql conexion = new ConexionSql();
+                PreparedStatement statement = conexion.getConnection().prepareStatement(sql)) {
+            statement.setString(1, dto.getCodBarra());
+            statement.setString(2, dto.getNombre());
+            statement.setString(3, dto.getTipo());
+            statement.setInt(4, dto.getCapacidadLitros());
+            statement.setFloat(5, dto.getPrecio());
+            statement.setInt(6, dto.getId());
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo actualizar el producto", ex);
+        }
     }
 
     @Override
     public boolean borrar(ProductoDto dto) {
-        throw new UnsupportedOperationException("Baja de productos fuera de alcance");
+        String sql = "UPDATE producto SET activo = 0 WHERE id = ?";
+        try (ConexionSql conexion = new ConexionSql();
+                PreparedStatement statement = conexion.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, dto.getId());
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo eliminar el producto", ex);
+        }
     }
 
     private ProductoDto mapear(ResultSet rs) throws SQLException {

@@ -58,7 +58,25 @@ public class PrincipalController extends Controller implements Initializable {
             showAlert(Alert.AlertType.ERROR, null, "Info", ex.toString());
         }
     }
-    
+
+    @FXML
+    private void opcConsultarProductos() {
+        try {
+            App.openFXMLResource("/fxml/ProductosVista.fxml", "Gestión de productos", Modality.APPLICATION_MODAL);
+        } catch (IOException ex) {
+            showAlert(Alert.AlertType.ERROR, null, "Productos", ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void opcConsultarClientes() {
+        try {
+            App.openFXMLResource("/fxml/ClientesVista.fxml", "Gestión de clientes", Modality.APPLICATION_MODAL);
+        } catch (IOException ex) {
+            showAlert(Alert.AlertType.ERROR, null, "Clientes", ex.getMessage());
+        }
+    }
+
     @FXML
     private void opcAcercaDe() {
         showAlert(Alert.AlertType.INFORMATION, null, "Info", "Otra alucinada de agusrafafer!");

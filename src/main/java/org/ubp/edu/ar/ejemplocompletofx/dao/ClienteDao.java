@@ -96,12 +96,35 @@ public class ClienteDao implements Dao<ClienteDto> {
 
     @Override
     public boolean modificar(ClienteDto dto) {
-        throw new UnsupportedOperationException("Modificacion de clientes fuera de alcance");
+        String sql = "UPDATE cliente SET tipo_documento = ?, nro_documento = ?, nombre = ?, apellido = ?, "
+                + "razon_social = ?, direccion = ?, telefono = ?, barrio_id = ? WHERE id = ?";
+        try (ConexionSql conexion = new ConexionSql();
+                PreparedStatement statement = conexion.getConnection().prepareStatement(sql)) {
+            statement.setString(1, dto.getTipoDocumento());
+            statement.setString(2, dto.getDni());
+            statement.setString(3, dto.getNombre());
+            statement.setString(4, dto.getApellido());
+            statement.setString(5, dto.getRazonSocial());
+            statement.setString(6, dto.getDireccion());
+            statement.setString(7, dto.getTelefono());
+            statement.setInt(8, dto.getBarrio().getId());
+            statement.setInt(9, dto.getId());
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo actualizar el cliente", ex);
+        }
     }
 
     @Override
     public boolean borrar(ClienteDto dto) {
-        throw new UnsupportedOperationException("Baja de clientes fuera de alcance");
+        String sql = "UPDATE cliente SET activo = 0 WHERE id = ?";
+        try (ConexionSql conexion = new ConexionSql();
+                PreparedStatement statement = conexion.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, dto.getId());
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            throw new IllegalStateException("No se pudo eliminar el cliente", ex);
+        }
     }
 
     private ClienteDto mapear(ResultSet rs) throws SQLException {

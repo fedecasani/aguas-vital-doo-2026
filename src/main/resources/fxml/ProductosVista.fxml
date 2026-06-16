@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="560.0" prefWidth="960.0"
+            style="-fx-background-color: #f4f7fb;"
+            xmlns="http://javafx.com/javafx/13"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.ubp.edu.ar.ejemplocompletofx.controladores.ProductosController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12.0"
+              style="-fx-background-color: white; -fx-padding: 16 22; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+            <padding>
+                <Insets bottom="16.0" left="22.0" right="22.0" top="16.0"/>
+            </padding>
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0b4f8a;"
+                   text="Catálogo de productos"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label style="-fx-font-size: 11px; -fx-text-fill: #78909c;"
+                   text="Aguas Vital · ABM de stock"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="0.0" style="-fx-padding: 16;">
+            <padding>
+                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+            </padding>
+
+            <!-- Formulario alineado con GridPane -->
+            <VBox prefWidth="340.0" spacing="0.0"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 10; -fx-padding: 20;">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                </padding>
+                <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1565c0;"
+                       text="Datos del producto"/>
+                <Separator style="-fx-padding: 10 0;"/>
+
+                <GridPane hgap="12.0" vgap="14.0">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="110.0" prefWidth="120.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="160.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="36.0"/>
+                        <RowConstraints minHeight="36.0"/>
+                        <RowConstraints minHeight="36.0"/>
+                        <RowConstraints minHeight="36.0"/>
+                        <RowConstraints minHeight="36.0"/>
+                    </rowConstraints>
+
+                    <Label style="-fx-text-fill: #546e7a; -fx-font-weight: bold;"
+                           text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="txtNombre" promptText="Ej: Bidón 20 L"
+                               style="-fx-background-radius: 6; -fx-padding: 8;"
+                               GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Label style="-fx-text-fill: #546e7a; -fx-font-weight: bold;"
+                           text="Cód. de barra:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <TextField fx:id="txtCodigoBarra" promptText="Ej: 7790123456789"
+                               style="-fx-background-radius: 6; -fx-padding: 8;"
+                               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label style="-fx-text-fill: #546e7a; -fx-font-weight: bold;"
+                           text="Precio:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <TextField fx:id="txtPrecio" promptText="0.00"
+                               style="-fx-background-radius: 6; -fx-padding: 8;"
+                               GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                    <Label style="-fx-text-fill: #546e7a; -fx-font-weight: bold;"
+                           text="Capacidad (L):" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <TextField fx:id="txtStock" promptText="Ej: 20"
+                               style="-fx-background-radius: 6; -fx-padding: 8;"
+                               GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                    <Label style="-fx-text-fill: #546e7a; -fx-font-weight: bold;"
+                           text="Tipo / Rubro:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <ComboBox fx:id="cmbTipoProducto" maxWidth="Infinity" promptText="Seleccione rubro"
+                              style="-fx-background-radius: 6;"
+                              GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                </GridPane>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <!-- Botones organizados en HBox -->
+                <HBox alignment="CENTER" spacing="10.0" style="-fx-padding: 12 0 0 0;">
+                    <padding>
+                        <Insets top="12.0"/>
+                    </padding>
+                    <Button fx:id="btnGuardar" onAction="#accionGuardar"
+                            style="-fx-background-color: #1565c0; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 10 20; -fx-font-weight: bold; -fx-cursor: hand;"
+                            text="Guardar"/>
+                    <Button fx:id="btnEliminar" onAction="#accionEliminar"
+                            style="-fx-background-color: #c62828; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 10 20; -fx-cursor: hand;"
+                            text="Eliminar"/>
+                    <Button fx:id="btnLimpiar" onAction="#accionLimpiar"
+                            style="-fx-background-color: #eceff1; -fx-text-fill: #37474f; -fx-background-radius: 6; -fx-padding: 10 20; -fx-cursor: hand;"
+                            text="Limpiar"/>
+                </HBox>
+            </VBox>
+
+            <Region prefWidth="16.0"/>
+
+            <!-- Tabla de productos -->
+            <VBox HBox.hgrow="ALWAYS" spacing="10.0"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 10; -fx-padding: 16;">
+                <padding>
+                    <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                </padding>
+                <HBox alignment="CENTER_LEFT">
+                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f;"
+                           text="Listado de productos"/>
+                </HBox>
+                <TableView fx:id="tablaProductos" style="-fx-background-radius: 8; -fx-border-color: #cfd8dc; -fx-border-radius: 8;"
+                           VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn prefWidth="180.0" text="Nombre"/>
+                        <TableColumn prefWidth="130.0" text="Cód. barra"/>
+                        <TableColumn prefWidth="90.0" text="Precio"/>
+                        <TableColumn prefWidth="80.0" text="Cap. (L)"/>
+                        <TableColumn prefWidth="120.0" text="Rubro"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

@@ -1,38 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="655.0" style="-fx-background-image: url('/org/ubp/edu/ar/ejemplocompletofx/fondo.png'); -fx-background-size: 100% 100%;" xmlns="http://javafx.com/javafx/13" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ubp.edu.ar.ejemplocompletofx.controladores.PrincipalController">
-   <children>
-      <MenuBar prefHeight="29.0" prefWidth="714.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="Gestión">
-            <items>
-                  <MenuItem mnemonicParsing="false" onAction="#opcConsultarPedido" text="Pedidos">
-                     <accelerator>
-                        <KeyCodeCombination alt="ANY" code="P" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <SeparatorMenuItem mnemonicParsing="false" />
-              <MenuItem mnemonicParsing="false" onAction="#salir" text="Salir">
-                     <accelerator>
-                        <KeyCodeCombination alt="ANY" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Ayuda">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#opcAcercaDe" text="Acerca de...">
-                     <accelerator>
-                        <KeyCodeCombination alt="ANY" code="A" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </children>
-</AnchorPane>
+<BorderPane prefHeight="520.0" prefWidth="900.0"
+            style="-fx-background-color: #eef2f7;"
+            xmlns="http://javafx.com/javafx/13"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.ubp.edu.ar.ejemplocompletofx.controladores.PrincipalController">
+
+    <top>
+        <VBox spacing="0.0">
+            <MenuBar style="-fx-background-color: #ffffff;">
+                <menus>
+                    <Menu mnemonicParsing="false" text="Gestión">
+                        <items>
+                            <MenuItem mnemonicParsing="false" onAction="#opcConsultarPedido" text="Pedidos">
+                                <accelerator>
+                                    <KeyCodeCombination alt="ANY" code="P" control="UP" meta="UP" shift="UP" shortcut="UP"/>
+                                </accelerator>
+                            </MenuItem>
+                            <MenuItem mnemonicParsing="false" onAction="#opcConsultarProductos" text="Productos">
+                                <accelerator>
+                                    <KeyCodeCombination alt="ANY" code="R" control="UP" meta="UP" shift="UP" shortcut="UP"/>
+                                </accelerator>
+                            </MenuItem>
+                            <MenuItem mnemonicParsing="false" onAction="#opcConsultarClientes" text="Clientes">
+                                <accelerator>
+                                    <KeyCodeCombination alt="ANY" code="C" control="UP" meta="UP" shift="UP" shortcut="UP"/>
+                                </accelerator>
+                            </MenuItem>
+                            <SeparatorMenuItem mnemonicParsing="false"/>
+                            <MenuItem mnemonicParsing="false" onAction="#salir" text="Salir">
+                                <accelerator>
+                                    <KeyCodeCombination alt="ANY" code="S" control="UP" meta="UP" shift="UP" shortcut="UP"/>
+                                </accelerator>
+                            </MenuItem>
+                        </items>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Ayuda">
+                        <items>
+                            <MenuItem mnemonicParsing="false" onAction="#opcAcercaDe" text="Acerca de...">
+                                <accelerator>
+                                    <KeyCodeCombination alt="ANY" code="A" control="UP" meta="UP" shift="UP" shortcut="UP"/>
+                                </accelerator>
+                            </MenuItem>
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
+
+            <HBox alignment="CENTER_LEFT" spacing="14.0"
+                  style="-fx-background-color: linear-gradient(to right, #0b4f8a, #1976d2); -fx-padding: 18 28;">
+                <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white;"
+                       text="Aguas Vital"/>
+                <Separator orientation="VERTICAL" prefHeight="32.0"
+                           style="-fx-background-color: rgba(255,255,255,0.35);"/>
+                <Label style="-fx-font-size: 14px; -fx-text-fill: rgba(255,255,255,0.88);"
+                       text="Panel de operaciones · Ventas y distribución"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <left>
+        <VBox prefWidth="240.0" spacing="6.0"
+              style="-fx-background-color: #16324f; -fx-padding: 20 16;">
+            <padding>
+                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+            </padding>
+            <Label style="-fx-font-size: 11px; -fx-text-fill: #7eb8e8; -fx-font-weight: bold;"
+                   text="NAVEGACIÓN"/>
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#opcConsultarPedido"
+                    style="-fx-background-color: #1f4d7a; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 12 16; -fx-background-radius: 8; -fx-cursor: hand;"
+                    text="Consultar pedidos"/>
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#opcConsultarProductos"
+                    style="-fx-background-color: #1a568c; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 12 16; -fx-background-radius: 8; -fx-cursor: hand;"
+                    text="Gestionar productos"/>
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#opcConsultarClientes"
+                    style="-fx-background-color: #1a568c; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 12 16; -fx-background-radius: 8; -fx-cursor: hand;"
+                    text="Gestionar clientes"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Separator style="-fx-background-color: rgba(255,255,255,0.15);"/>
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#opcAcercaDe"
+                    style="-fx-background-color: transparent; -fx-text-fill: #b8d4f0; -fx-font-size: 12px; -fx-padding: 10 16; -fx-background-radius: 8; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 8; -fx-cursor: hand;"
+                    text="Acerca del sistema"/>
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#salir"
+                    style="-fx-background-color: #c62828; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 10 16; -fx-background-radius: 8; -fx-cursor: hand;"
+                    text="Salir"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane style="-fx-background-image: url('/org/ubp/edu/ar/ejemplocompletofx/fondo.png'); -fx-background-size: cover; -fx-background-color: #eef2f7;">
+            <VBox alignment="CENTER" maxWidth="520.0" spacing="18.0"
+                  style="-fx-background-color: rgba(255,255,255,0.92); -fx-background-radius: 16; -fx-padding: 36; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 18, 0, 0, 4);">
+                <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #0b4f8a;"
+                       text="Bienvenido al sistema"/>
+                <Label style="-fx-font-size: 13px; -fx-text-fill: #546e7a; -fx-wrap-text: true; -fx-text-alignment: center;"
+                       text="Gestione pedidos de entrega, actualice estados de visita y controle la operación diaria desde el menú lateral o las opciones de la barra superior."
+                       wrapText="true"/>
+                <HBox alignment="CENTER" spacing="12.0">
+                    <VBox alignment="CENTER" prefWidth="140.0" spacing="4.0"
+                          style="-fx-background-color: #e3f2fd; -fx-background-radius: 10; -fx-padding: 14;">
+                        <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1565c0;" text="MVC"/>
+                        <Label style="-fx-font-size: 11px; -fx-text-fill: #546e7a;" text="Arquitectura"/>
+                    </VBox>
+                    <VBox alignment="CENTER" prefWidth="140.0" spacing="4.0"
+                          style="-fx-background-color: #e0f7fa; -fx-background-radius: 10; -fx-padding: 14;">
+                        <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #00838f;" text="State"/>
+                        <Label style="-fx-font-size: 11px; -fx-text-fill: #546e7a;" text="Estados pedido"/>
+                    </VBox>
+                    <VBox alignment="CENTER" prefWidth="140.0" spacing="4.0"
+                          style="-fx-background-color: #e8f5e9; -fx-background-radius: 10; -fx-padding: 14;">
+                        <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" text="DAO"/>
+                        <Label style="-fx-font-size: 11px; -fx-text-fill: #546e7a;" text="Persistencia"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>
